@@ -13,11 +13,11 @@ LOG_MODULE_REGISTER(race_condition_demo, LOG_LEVEL_INF);
 #define EXPECTED_FINAL_VALUE   (INCREMENTS_PER_THREAD * TOTAL_THREADS)
 
 /* Mapeamento dos LEDs RGB nativos da placa FRDM-KL25Z via Devicetree */
-#define RED_LED_NODE   DT_ALIAS(red_led)
-#define GREEN_LED_NODE DT_ALIAS(green_led)
+#define RED_LED_NODE   DT_ALIAS(led2)
+#define GREEN_LED_NODE DT_ALIAS(led0)
 
-static const struct gpio_dt_spec red_led   = GPIO_DT_SPEC_GET_OR(RED_LED_NODE, gpios, {0});
-static const struct gpio_dt_spec green_led = GPIO_DT_SPEC_GET_OR(GREEN_LED_NODE, gpios, {0});
+static const struct gpio_dt_spec led2   = GPIO_DT_SPEC_GET_OR(RED_LED_NODE, gpios, {0});
+static const struct gpio_dt_spec led0 = GPIO_DT_SPEC_GET_OR(GREEN_LED_NODE, gpios, {0});
 
 /* 
  * VARIÁVEL COMPARTILHADA:
@@ -67,11 +67,11 @@ int main(void)
     LOG_INF("==================================================");
 
     /* Inicializa os pinos do LED RGB nativo */
-    if (gpio_is_ready_dt(&red_led)) {
-        gpio_pin_configure_dt(&red_led, GPIO_OUTPUT_INACTIVE);
+    if (gpio_is_ready_dt(&led0)) {
+        gpio_pin_configure_dt(&led0, GPIO_OUTPUT_INACTIVE);
     }
-    if (gpio_is_ready_dt(&green_led)) {
-        gpio_pin_configure_dt(&green_led, GPIO_OUTPUT_INACTIVE);
+    if (gpio_is_ready_dt(&led2)) {
+        gpio_pin_configure_dt(&led2, GPIO_OUTPUT_INACTIVE);
     }
 
     LOG_INF("Valor inicial do contador : %u", shared_counter);
@@ -111,15 +111,15 @@ int main(void)
                 lost_increments, (double)percent_lost);
 
         /* Feedback Visual: Acende o LED Vermelho */
-        if (gpio_is_ready_dt(&red_led)) {
-            gpio_pin_set_dt(&red_led, 1);
+        if (gpio_is_ready_dt(&led2)) {
+            gpio_pin_set_dt(&led2, 1);
         }
     } else {
         LOG_INF("SUCESSO: Nenhum incremento foi perdido.");
 
         /* Feedback Visual: Acende o LED Verde */
-        if (gpio_is_ready_dt(&green_led)) {
-            gpio_pin_set_dt(&green_led, 1);
+        if (gpio_is_ready_dt(&led0)) {
+            gpio_pin_set_dt(&led0, 1);
         }
     }
 
